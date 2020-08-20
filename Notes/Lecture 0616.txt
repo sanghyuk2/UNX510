@@ -1,0 +1,17 @@
+awk [options] '/re/ {execution}' filename
+options:
+-f scriptfilename (.awk, execute from script)
+-F";" (sets default delimiter)
+
+print
+printf - similar to print commands but provides formatting
+
+generating reports
+ex) 
+awk 'BEGIN {print "Report Title"} /re/ {execution}
+END {print "End of the Report"}' filename
+
+cat /etc/passwd
+set the delimiter as ":"
+
+last activity change the capital letter wrapped in the '()'

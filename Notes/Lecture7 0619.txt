@@ -1,0 +1,46 @@
+Globing shell options
+1. using wild characters like : * and ?
+ex) ls t?.*
+
+2. using []
+ex) ls make.[1-3]
+ls [^abc] - list all the files not having a,b,c
+
+3. using {}
+ex) touch myfile{1..10} - myfile1 .. myfile10까지 만든다.
+echo {1..20..2} - 1부터 20까지 2간격으로 보여준다. 1, 3, 5, .. 19
+
+ls와 echo의 다른 점은 파일을 열거하였을 때 ls는 각 파일마다 tab간격을 보여주는 반면,
+echo는 스페이스 하나로 퉁침
+
+The reason why ls FIle* shows the list of bunch of file is 
+
+shopt command를 통하여 option을 키고(-s) 끌 수(-u)가 있다.
+shopt -s nocaseglob 하면 ls jan* 해도 output으로 Jan을 가져올 수 있다.
+
+Extended globing
+
+?(pattern-list) - vertical bar로 나뉘어진 item들을 보여준다.
+*(pattern-list)
++(pattern-list)
+@(pattern-list)
+!(pattern-list)
+ 
+
+let's say we do have a file name pic pic3 pic33, pic..3333
+and pic4, pic44, pic44.jpg, pic44.gif, pic44.bmp, pic44.mov
+
+ex)
+ls pic*(3) - output: pic pic3 pic33 pic333 pic3333
+ls pic+(3) - output: pic3 pic33 pic333 pic3333
+ls pic*.@(gif|bmp) - output: pic44.bmp pic44.gif
+ls pic*.!(gif|bmp) - output: pic44.jpg, pic44.mov
+
+collating - it means language setting, character code
+
+Named Class collections
+tr - command used to translate characters to different characters
+tr a A < filename - translate all the a alphabet to A character
+
+tr "[:lower:]" "[:upper:]" < filename - all the lower-letters inside the filename will be translated to uppercase
+

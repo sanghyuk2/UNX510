@@ -1,0 +1,61 @@
+dumb terminal - text display with a keyboard
+Unix is good at handling many different of terminals
+
+once I conntect to matrix account, my machine becomes terminal as I am taking advantage of terminal to proceed the command.
+
+
+Terminal Handling
+
+
+
+Control structures in Unix
+CASE..ESAC
+SELECT
+
+stty - command showing an abbreviated list of terminal capablitities
+stty -a
+ex) it displays such as intr = ^C
+If you want to change the usage of command you can simply change by doing following:
+stty intr ^I
+But it does not influence another terminal, which means although you have changed in one terminal and you open the new terminal with the same account, the new terminal does have the previouse set of stty list
+stty -echo - disables echoing of typed characters 
+ex)
+echo -n "Enter password: "
+stty -echo -이렇게 함으로써 입력하는 비밀번호가 콘솔에 보이지 않는다.
+read password
+stty echo
+echo -e "\nYou entered '$password'"
+
+echo $TERM - displays the name of terminal you are using.
+
+infocmp
+ex) cub - cursor back
+cuf - cursor forward 
+
+tput
+ex) tput cols - give number of columns in current display
+tput lines - give number of lines in current display
+
+
+**need to remember
+~/.profile
+~/.bashrc
+~/.bash_profile
+
+case 
+ex) case expression in
+pattern1)
+statements;;
+pattern2)
+statements;;
+esac
+
+If there is no match, exit status of case is zero
+
+select - generates a menu from a list of items.
+syntax)
+select ITEM in [LIST]
+do
+. [COMMANDS]
+done
+

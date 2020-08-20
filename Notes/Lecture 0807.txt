@@ -1,0 +1,43 @@
+Difference betweeen $name and ${name}
+
+name=seneca
+echo $name
+echo $name.txt
+echo $name+txt
+echo ${name}_txt
+echo "${name}_txt
+
+echo removes the spaces and left no matter how many spaces you do have
+ex)
+name="seneca	college"
+
+When you are assigning the value on the variable, you do not need any delimiter
+However as soon as you do have assignment and command and another command after second command then it will consider the third command as argument of second command
+And If you have command and then assignment to a variable then it won't work
+
+set/unset
+set - set a shell variable
+ex) set value = 7
+
+unset - delete a shell variable
+
+<set command>
+set -x : enables a mode of the shell where all executed commands are printed to the terminal
+
+
+<seq command>
+seq - output the number in vertical way
+syntax)
+seq [option] 
+
+
+touch {a..c}{a..c}{a..c}
+echo aa*
+echo a{a,b}* - first character is a and second character is a or b and third character can be anything
+//It works exactly the same as echo a[a,b]* echo a[ab]*
+
+echo $_ : returns the last argument
+
+sleep 30 & // run sleep timer 30 in background
+echo $! // Process ID of the most recent command (or background command)
+kill $! // kill Process ID of the most recent command (or background command)

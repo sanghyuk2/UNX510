@@ -1,0 +1,129 @@
+UNX510 
+<LAB 1.1>
+You can backspace at a shell promt by pressing one of these keys:
+1. Backspace
+2. ctrl + backspace
+3. ctrl + h
+sometimes delete or ctrl + delete might also work.
+
+UNIX commands are generally entered in lowercase
+
+Any additional information that you give to a command is called an 'argument' ex) ls -l (-l is an argument)
+
+If you type 'cd' without any additional argument then it will be made the current directory
+
+whoami - display your username
+who - display the whole users that are currently logged on to the server
+date - display the current time and date
+cal - calendar (To display an entire calendar for the year 2020, cal 2020)
+
+<LAB 1.2>
+command [argument1] [argument2] ... [argument n] - argument (=parameter) is additional information given to a command program, such as ommand options, strings of text,  numbers or other elements that the command needs.
+one or more spaces or tabs must appear between arguments and between the command and the first argument
+
+Types of Argument
+1. Positional Argument - expected to appear in a certain sequence. ex) cp original_file destination_file (cp command is copy command)
+2. Simple Options - options are arugments which modify the way in which a command operates. In Unix, options must often be specified before positional arguments, whereas Linux do not.
+3. Options with a Value - some options need an additional value ex) sort -k 5 (which lets you specify the number of the field to sort on) 
+
+sort
+- k option - looking forward which column you'd like to sort, which means you need to put number after the k
+- n option - sorting numerically instead of alphabetically
+
+Number of the spaces between argument does not matter to operate the command
+Option is not positional argument, which means you can put the option after the positoinal argument ex) ls /home/slee395 -l would work exactly same as the ls -l /home/slee395
+
+On Linux, using bash:
+<Up Arrow> Display previous command
+<Down Arrow> Display next command
+
+Ctrl + c - cancle a runnin command
+Ctrl + l - clear the screen and continue editing
+Ctrl + u - undo the command being entered (erase it and start over)
+
+man - online manual command. Press enter to move down one line, space to move down one screen, and 'b' to move up one screen, 'q' to quit from the outline help and return to this lab.
+with '-k' option, it will display the brief description of all of the commands with the keyword in their summary.
+
+ls option to list directory entries, not the content - d
+
+touch - create empty file
+ls with * - will display matching multiple files ex) ls file* will display all of the file names starting with file
+ls -a - will display all the hidden file and non-hidden file. Files that appear with a period as the first character in the filename are called hidden files.
+
+mv - used to rename files
+mv [source-file] [destination-file] or mv [old file-name] [new file-name]
+
+more - to view files larger than your terminal window. spacebar will advance one page and enter will advance one line.
+
+head - will show the number of lines from the starting point ex) head -2 filename
+tail - will show the number of lines from the end of file ex) tail -2 filename
+
+sort - used to srt contents of a file i.e. sort [options] filename
+uniq - used to display only one occurence of identical adjacent lines. If you want to prevent duplication of identical lines that are not adjacent, the file should be sorted prior to using this command (or use sort -u)
+즉 uniq command는 중복줄의 디스플레이를 막는다. 떨어져있는 중복 줄을 하나만 표시하기 위해서는 sort -u먼저 사용하고 uniq를 다음에 사용하여야한다.
+i.e. uniq [options] [filename]
+grep - used to display matching patterns within a file. i.e. grep [options] [pattern] [filename] ex) grep 'chevy' filename
+
+<Lab 1.3>
+The /(root) directory is the beginning (or master) directory.
+
+Directory - a 'directory file' used to store other files.
+Sub-directory - a directory file DIRECTLY contained within a 'parent' directory. Also called a 'child directory'. In the diagram, 'usr' is a child of '/', the root.
+Parent Directory - a directory that contains one or more children. 	
+
+Unix file hierarchies features:
+1. No drive letters 
+2. Everything is a file
+3. Files do not have to have an 'extension', though you may use one to indicate the type of file content ex) '.html' to indicate HTML web files
+
+A period before a fileanme 'hides' the file. All the file names are case-sensitive.
+
+Pathname - used to specify the location of a file or directory. 
+1. Absolute Pathname - location reference starting from the root '/', which means always start with a slash '/' character.
+ex) /etc/system/config/ejb.conf
+
+2. Relative Pathname - location reference starting form the 'current directory'
+. - THIS (current) directory
+.. - Parent directory
+
+3. Relative-to-Home Pathname - location reference starting from your 'home directory' and starting with a tilde '~'
+ex) ~/lastyear.txt == /home/slee395/lastyear.txt
+If your friend's userid was 'jstudent' and her home directory was '/home/jstudent', followin pathnames would be equivalent:
+ex) ~jstudent/test == /home/jstudent/test
+
+Ambiguous Pathanmes - used to permit you to specify a number of files at once.
+wildcard followings:
+* - matches zero or more of any character
+ex) a*b - output: ab, a2314234b ...
+
+? - matches exactly one of any character
+ex) a?b - output: a2b, axb ...
+
+[class] - matches exactly one character from the class. ?랑 같지만 자신이 ?에 무엇이 들어갈 수 있는지 정한다는 점에서 ?와 차이를 보인다.
+ex) [abc] - output: a, b, c ...
+notes[127-9] - output: notes1, notes2 ...
+If you use '!' at the very first position inside the square bracket, it will find the results which is not in the character-class
+ex) [!a-c]* - output: drift, 4234run ...
+a[!b]c - output: a2c, alc ...
+
+Globbing - the process of converting an ambiguous filename into a list of matching file names is calld 'globbing'
+ex) If you type 'echo *', then it will list down all the files in your current directory. To avoid this, use quotes around the argument.
+
+mkdir - making directory. With the argument '-p' even if you don't have parent directory of directory you'd like to make, it makes you available.
+ex) mkdir -p testing/1/2/3
+
+ls -R - to show the content of directory recursively.
+
+rmdir - to remove the directory. You should not in the directory that you are going to delete. Also the directory that you are going to delete should not have any files inside.
+rm -r - will remove non-empty directories which contain files or child directories, grandchild directories, etc.
+rm -i - prompt whether each directory or file is to be removed. 삭제할건지 물어봄
+
+find - find the files
+ex) find . -size +10k - find the file which size is over 10k
+
+diff - commands to see the differences
+ex) diff ~unx510/2020b/cars stenton/gen_ed/cars - it compares two files and look for the differences.
+
+wc -m - shows the number of bytes
+
+ln - create hard link

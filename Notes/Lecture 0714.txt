@@ -1,0 +1,22 @@
+<Week8>
+Modular Programming - emphasize separting the functionality of a program into independent, interchangeable moduels
+main idea is divide complex ones into smaller and combine these solutions.
+
+long program can be divided into a smaller program called modules.
+
+Programs are composed of one or more
+
+Function
+In Unix, when we call the function, we don't need to put () at the end 
+ex) function() is written in function
+The function must have return statement
+
+Interesting point of function in bash is it only returns 0 for success, non-zero for failure.
+It does not return value
+
+Procedure
+just executes commands and no return value
+
+shebang - which shell is responsible for follwing code
+It is optional but better to have
+ex) #!/bin/sh

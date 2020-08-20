@@ -1,0 +1,114 @@
+UNX510/ - 
+
+He might going to record the lecture so I am available to retake again to catch up.
+
+1. Introduce yourself at discussion board -> Introduction
+
+If you want an instant reply, please sent the question thorugh email or microsoft teams.
+
+I can try the lab a lot.
+
+What is an Operating System? - Collection of programs which manage and control the basic operation of the computer
+
+Putty 
+
+senecaID@matrix.senecacollege.ca (senecac.on.ca)
+
+1. Simply go to the cmd or powershell
+2. ssh slee395@matrix.senecacollege.ca
+
+<Unix File System>
+
+There are no drive letters (i.e. C:, D:)
+
+Windows:
+Path --> drive_letter:\folder\subfolder\...
+
+/homeDirectory/otherDirectories/...
+
+If I type pwd(present working directory), it shows where I am.
+
+When I type cd / it goes root
+If you type cd without any command and it will change to the user's home directory
+
+tree: to see what I do have on current folder
+
+man: manual, you can combine any command after man, like 'man tree' and it will show how to use the command
+
+
+~: Home directory, where you keep your personal files. 'cd ~' === 'cd'
+
+mkdir: make directory
+If I want to make a subfolers, mkdir -p test1/test2/test3
+
+
+rmdir: remove directory 
+
+'cd ..' help you to go you back level down.
+'cd ../..' help you to go back 2 level down.
+
+Any file name starting with a period is considered to be a hidden file.
+
+ls
+-l option - details
+-d option - displays info about the directory itself instead of the files within it.s
+-A option - displays “Almost” all files – not including . and ..
+
+Types of files:
+- indicates a regular file
+b or c indicates a device file
+d indicates a directory
+
+touch - creates an empty file
+
+
+Permissions
+r: read
+w: write
+e: execute
+
+-rw-r--r--: reason why it is divided by 3 blocks is it represents a group
+
+Directory has a 'd' at the very first, normal file made by the command 'touch' does not have 'd'
+
+vi: text editor, also can create a text file.
+If you type 'i' then you can start to write
+If you just type vi and edit the text, then :w filename is required to save that written text file.
+
+vi modes:
+Command mode(default) - input text, delete text, append text, etc.
+Input mode - Input Mode allows user to enter or edit text. Press <ESC> to return to command mode.
+Last-line mode - when you press columns ':'
+
+Moving in Command Mode:
+h (left), j (down), k (up), and l (right).
+w (right one word or to special characters),
+W (right one word including special characters)
+b (left one word or to special characters),
+B (left one word including special characters)
+0 (zero) (beginning of line)
+$ (end of line)
+G (go to last line in file)
+237G (go to line 237 in file)
+
+Getting into Input Mode:
+i – insert to left of cursor
+I – insert at beginning of line
+o – insert line below current line
+0 – insert line above current line 
+a - append to right of cursor
+A - append at end of current line 
+r - replace character under cursor
+R – overwrite text character-by-character
+
+If you want to go out, simply type esc and type :wq 
+:wq : write and quit
+:q! : not to save and quit
+
+cat: to see the file content, made by the command vi
+
+man - manual command (i.e. man [option] command)
+-k option - provides short explanation relating to a command. useful when user does not remember the name of a command. ex) man -k calendar
+
+
+

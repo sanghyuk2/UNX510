@@ -1,0 +1,52 @@
+Shell vs kenel
+
+Shell is the interface between the command prompt user and the operating system
+
+Type of shells:
+Bourne shell(sh)
+C shell(csh)
+Korn shell(ksh)
+BASH shell(bash)
+
+The main difference is the syntac(languages/commands) they use
+
+Shell sciprt is a computer program designed to be run by the Unix shell, a command-line interpreter
+dialects of shell sciprts such as .bash, .sh, .ksh is considered to be scripting languages.
+== 끝에 무엇을 붙이느냐에 따라 성질이 정해진다.
+
+script(programming) 파일을 실행하려면 x, 즉 execute permission이 있어야한다.
+이를 추가하기 위하여 chmod command를 통해서 permission을 부여한다.
+ex) chmod +x filename -> 모든 group에게 x를 부여한다.
+
+$사인을 command 앞에 붙이면서 명령어가 되게 한다.
+ex) echo PWD 하면 PWD가 메세지로 보여지지만, echo $PWD를 하면 현재 어느 위치에 있는지 보여준다.
+
+변수 지정 시 단순히 =를 붙여 부여한 후 $를 변수 앞에 붙임으로써 echo command를 통하여 확인할 수 있다. 주의할 점은 변수 부여 시 space가 없어야 한다.
+만약 변수 사이에 빈 공간이나 - 같은게 들어가면 "" 혹은 ''를 통하여 가능하게 만들 수 있다.
+만약 변수를 없애고 싶으면 unset command를 통하여 변수를 없앨 수 있다.
+
+read command는 유저로부터 input을 받는다.
+ex) read grade -> required user input to type
+
+
+Let's say I made the file by vi May26-2.sh
+
+echo -n "Enter a number:"
+read number
+echo "You entered $number"
+
+chmod +x May26-2.sh
+and echo May26-2.sh will shows the script
+
+echo -n "Enter a number:"
+read number
+((number=$number*10))
+or let number = $number*10
+echo "The number * 10 is equal to : $number"
+
+To run the script file we need to run by typing the filename itself without any additional commands
+ex) If I put cat in front of the file it will shows echo command as a string as well.
+
+If we want to comment the sentences, simply put the # in front of the sentence.
+If you want to make a new line of the script file, you can put echo without any additional commands 
+

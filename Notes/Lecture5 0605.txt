@@ -1,0 +1,49 @@
+Multiple Commands
+
+Besides piping, there are other ways that multiple commands can be used
+by using ';' ex) pwd; date;
+
+You can also use it by '()', '{}'
+ex) (date; pwd; whoami) > output.txt
+
+If you do (m="message1"; echo $m) the output will be showing 'message1'
+and when you do echo $m, then you will not get nothing
+
+To use the '{}' you must need to put ';' after the last argument
+ex) { date; pwd; whoami} > output.txt ***warning*** you always need to have a space at the very first argument
+{ n="message2"; echo $n;}, it will show the 'message2' and when you do 'echo $n', then it will show 'message2' as well.
+
+The reason why we get different output when we do simply echo $n/m is based on the shell level
+() - create a new shell level 
+each shell level has its own scope, and if you delcare a variable in one level, you cannot reach that variable in a different level.
+{} - does not create a new shell level
+
+
+Shell Level
+when you run a command in a shell, it runs at the shell level.
+Within a shell, you can open another shell, which makes it a subshell of the shell that
+
+How to Display the Shell Level
+echo $SHELVL
+
+When you make a script file having the command echo $SHLVL and run the file then it will show 2.
+
+
+ex) p="Hello World"
+echo $p //output: Hello World
+echo $SHLVL // output: 1
+bash // starting another shell
+echo $p //as it has been executed on the another script which means it has been reset so that the output is just a blank
+echo $SHLVL //output: 2
+exit // exist from the current shell and return to previous one
+
+If I run the file called 1 having a command calling file nmae 2 having the command showing shell level (echo $SHLVL) then the output will be '3'
+
+(date; ls -l nofile.txt) > out1.txt //will cause an error as the file you want to list does not exist.
+(date; ls -l nofile.txt) 2> out1.txt //will only show the result not the error. 
+(date; ls -l nofile.txt) 1> out1.txt 2>> out1.txt //will show the date and error 
+(date; ls -l nofile.txt) &> out1.txt //will get the same result as the above command
+
+When you are using && and use lots of argument, and if you get one of the arguments error, then the command will stop in that position.
+
+Quiz will be a short answer explaining the question and submit the screenshot of the script

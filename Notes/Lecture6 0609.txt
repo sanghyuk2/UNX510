@@ -1,0 +1,52 @@
+What are Regular Expressions?
+Regular expressions are special characters which help seach data, matching complex patterns.
+
+Grep - uses regular expressions
+ex) grep friend poem.txt - will match any string having friend as substring in it, like friends, friendly, friendship.
+shows the lines including pattern
+
+. - replaces any character and should be at least one character ex) grep c.t filename
+^ - matches start of string ex) grep ^a filename - will find the lines that start with a
+$ - matches ends of string ex) grep h$ filename - will find the lines that ends in h
+
+grep ^$ filename - find blank lines
+
+[] - one of the characters inside the square brackets will be matched
+ex) grep [Ll]inux filename
+grep [a-c] filename - will shows all the a to c highlighted
+
+^[] - will find any matches starting with one of the characters inside the []
+[^] - will find any matches not starting with one of the characters inside the []
+
+grep / /etc/password - as / has the special meaning in the linux, so need to escape it by using a \ 
+so grep '\/' /etc/password
+
+grep -v pattern - find all the lines not having the pattern 
+
+\< 
+ex) grep '\<free' filename - matches the wors begining with free, like freedom
+\>
+ex) grep 'ick\> filename - matches the words ending with ick like brick, click
+so the differences between using $ and \> is depending on wheter it is a line or words.
+
+awk(Aho, Weinberger & Kernighan : 개발자들 이름) - parsing, filtering, and easy formatting of text
+It sees each line as being made up of a number of fields, each being separated by a 'field separator'
+The first field is refered to $1 and the whole line is $0
+
+awk 'pattern {action}' filename // pattern is regular expression, action is like a print
+by default 'space' is delimiter
+
+'/' indicate that chevy is a regular expression
+awk '/chevy/' {print $1, $2, $5} filename - lines that contain the string chevy(lowercase)
+
+awk '$3==83' {print $1} filename - field 3 is 83 then print the field 1
+
+awk -F - let the linux what is the delimiter deciding the fields. ex) awk -F":" '{print $1}' filename
+
+awk '$1 ~ /a/ {print $1, $2, $5} filename - '~' means match, so output all the lines that does have a in 1,2, 5 column
+
+NR is an awk variable meaning the line number of the current record
+
+SED(Streamm Editor) 
+sed [-n] 'address instruction' filename
+ex) sed '/chevy/ p' cars - 

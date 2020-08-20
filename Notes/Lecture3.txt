@@ -1,0 +1,175 @@
+5/29
+
+Shell script: Shebang
+
+Most Linux shell and Perl / Phython script starts with Shebang
+- #!/bin/bash 일반적으로 첫 번째 줄에 사용된다.
+
+#! - used in sciprts to indicate an interpreter for execution 
+under Unix
+
+Variables
+
+Environment Variables
+ex) echo "Hi there, $USER"
+
+User-Defined Variables
+
+Positional Parameters
+ex) 
+vi May29-1.sh
+
+#!/usr/bin/bash
+echo $1
+echo $2
+
+:wq
+
+cat May29-1.sh
+
+chmod +x May29-1.sh
+May29-1.sh Hello World
+
+Output:
+Hello
+World
+
+To explain, the Hello is considered as a first parameter which is placed on $1, the world is on $2.
+*** If the numbers of $ is larger than 9 then need to write as ${10}
+
+shift - this commands is used to move the positional arameters to left 
+ex) 
+#!/usr/bin/bash
+echo $1
+shift
+echo $1
+
+:wq
+
+echo Hello World
+
+output:
+Hello
+World
+
+To explain, the hello is placed on $1 and by using shift command the World is replaced to Hello and placed on $1.
+That's why it shows up same output as the previous one.
+
+
+Special Parameters:
+
+ex)
+#!/usr/bin/bash
+echo $* //which is showing all the positoinal parameters
+echo $# // shoing number of positional parametres
+echo $1
+shift
+echo $1
+
+Input May29-1.sh Hello World How are you
+Output: 
+Hello World How are you
+5
+Hello
+World
+
+
+if statement
+
+if [condition]
+then
+	command(s)
+else
+	command(s)
+fi
+
+
+#!/usr/bin/bash
+echo $* 
+if [ $# > 2 ] // == if test $# -lg 2 - by using test command, you don't need to put square bracket.
+then //this then is always need to be next line after the condition. But if you want to put on the same line, you can simply put ';' after the condition and put 'then'
+echo "Here you go!"
+fi 
+echo $1
+shift
+echo $1
+
+when you are handling the argument, you must check the number of parameter first.
+
+
+The test Command
+can be used by following two ways
+
+x=9
+test $x -eq 9 //compare if the x is 9 or not. If it is true then it returns 0 otherwise returns 1
+echo $? //$? exit code.
+
+
+Using Loops
+for item in list //variable "item" will hold one item from the list every time the loop item. List can be typed in explicitly or supplied by a command
+do
+	command(s)
+done
+
+%(modulus) - catch the remainder
+
+elif control-flow statement
+
+elif statement - used to work like a nested if statement
+
+ex) 
+if test $mark -gt 50 
+then 
+echo "you pass"
+elif test $mark -eq 50
+then
+echo "you JUST passed"
+else
+echo "sorry, you failed"
+fi
+
+for number in {start..end..step}
+
+ex) for i in {1..10} // {} refers to a range
+do
+echo $i 
+done
+
+Output:
+1
+2
+3
+.
+.
+10
+
+ex) 
+for i in {1..10..2} // {} refers to a range
+do
+echo $i 
+done
+
+output:
+1
+3
+5
+7
+9
+
+While loop
+
+while condition // in this condition, we dont really need the quation mark covering the variable
+do
+command
+command ... //the last command in the 'while loop' is loop variable alteration
+done
+
+A.sh>B.txt
+It redirects the output of the A.sh to B.txt
+
+A.sh>>B.txt
+It appends the output of the A.sh to B.txt
+
+
+1. open the file and that file maybe consist of the some items which I am going to email to someone
+2.   

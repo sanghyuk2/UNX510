@@ -1,0 +1,25 @@
+getopts
+syntax) getopts optstring name [arg ...]
+
+ex)
+while getopts ":ht" opt; do
+ case ${opt} in
+ h ) echo "process option h"
+ ;;
+ t ) echo "process option t"
+ ;;
+ \? ) echo "Usage: cmd [-h] [-t]"
+ ;;
+ esac
+done
+
+3rd argument
+1. OPTIND - stores the index of the next argument to be processed in the shell variable OPTIND
+2. OPTARG - stores the value of the option 중요!! 옵션 뒤에 다른 argument 요구
+
+getopt - external utility
+getopts - we are going to use this
+
+will ask you to record representation 
+
+https://stackoverflow.com/questions/18414054/rreading-optarg-for-optional-flags#:~:text=getopts%20is%20used%20by%20shell,from%20it%20by%20white%20space.

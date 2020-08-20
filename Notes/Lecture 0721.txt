@@ -1,0 +1,76 @@
+Array - variable storing more than one value, series of memory locations
+It is like a shelves.
+syntax) ARRAY[INDEX]=value
+ex) age[0]=19, age[1]=22
+
+To declare:
+syntax) declare -a ARRAYNAME
+
+It is also be created using compound assignments in the following format:
+syntax) ARRAY=(value1 value2 value3 ... valueN)
+
+To display the first value:
+echo ${ARRAYNAME[0]} == echo ${ARRAYNAME:0}
+
+To display all the value:
+echo ${ARRAYNAME[*]} == echo ${ARRAYNAME[@]}
+
+READ array from input
+syntax) read -a ARRAYNAME - it makes you type the value going to be in array
+
+Length:
+echo ${#ARRAY[INDEX]}
+
+display all elements except first
+echo ${#ARRAY[@]:1}
+
+display all elements except first, and second
+echo ${#ARRAY[@]:2}
+
+display elements in range
+echo ${#ARRAY[@]:1:4}
+
+replace all the a to A temporay not permanent
+echo ${ARRAY[@]/a/A}
+
+Subsitution
+syntax) {parameter/patter/string}
+
+Substring Expansion
+syntax) ${parameter:offset:length}
+
+In order to travel array, it is required to use loop
+syntax)
+for i in "${array[@]}"
+do
+echo $i
+done
+
+
+ex)
+D=( $(date) )
+echo ${D[0]}
+
+as the syntax of date command is day Month date time ...
+the output of echo command is day
+
+Associative array - array storing strings
+ex) 
+declare -A AGE - A stands for associative array
+AGE[John]=20
+AGE[Mary]=30
+AGE[Sara]=19
+echo ${AGE[*]} //output is 30 20 19
+echo ${AGE[Mary]} //30
+
+ex2)
+declare -A AGE=([John]=20 [Mary]=30 [Sara]=19)
+
+To access an associative array we can access individually or by using any loop
+ex)
+for key in "{!assocArray1[@]}" //! stands for displaying index
+ex) If we do echo ${!AGE[*]} the output will be Mary John Sara
+do
+echo $key
+done
+echo 
