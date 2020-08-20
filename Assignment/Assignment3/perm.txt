@@ -1,0 +1,454 @@
+#!/bin/bash
+
+# Assignment 3
+# Course:                UNX510
+# Family Name:           Lee
+# Given Name:            Sanghyuk
+# Student Number:        129-405-171
+# Login name:            slee395
+# Professor:             Shahdad Shariatmadari
+# Due Date:              August 7, 2020
+#
+# I declare that the attached assignment is my own work in accordance with
+# Seneca Academic Policy.  No part of this assignment has been copied manually
+# or electronically from any other source (including web sites) or distributed
+# to other students.
+
+#used to reset the setting when user ctrl + c						    
+trap 'stty icanon icrnl echo; tput cud $(( $(tput lines)-position-11 )); tput cub 32;  exit 0' INT
+
+currDir=$1
+count=1
+pvsCount=0
+arrPos=0
+
+declare -a pathArr 
+declare -a lastDirArr
+
+#declare to use 2d Array
+declare -A XPos
+declare -A YPos
+
+#check wheter the number of argument is less than 1
+if [ "$#" -lt 1 ]; then
+	currDir=$PWD
+fi
+#check wheter the number of argument is greater than 2
+if [ "$#" -gt 1 ]; then
+	echo "Usage: pathdisplay [ dir-name ]"
+	exit 1
+fi
+#check wheter the argument is directory
+if [ ! -d "$currDir" ]; then
+	echo "$currDir is not valid directory name"
+	exit 1
+fi
+
+
+#clear the screen
+clear
+
+#print the header
+echo " Owner   Group   Other   Filename"
+echo " -----   -----   -----   --------"
+
+#get the path using realpath command
+dir1=$(realpath $currDir)"/"
+
+#set delimieter to / and count how many directory field 
+iterations=$(echo "${dir1}" | awk -F"/" '{print NF-1}')
+
+#assign the path to array by counting until iteration variable which is the number of the directories
+while (( count < $iterations ))
+do
+	pathArr[$count]=$(echo $dir1 | cut -d"/" -f$((count+1)))
+	lastDirArr[$count]=${pathArr[$count]}
+	pathArr[$count]=${pathArr[$pvsCount]}"/"${pathArr[$count]}
+	pvsCount=$count
+	count=$(( count+1 ))
+done
+
+pathArr[0]='/'
+lastDirArr[0]='/'
+count=0
+addLines=0
+
+
+while (( count < $iterations ))
+do
+	echo ""
+	temp=${lastDirArr[$count]}
+	#count the output length 
+	outputLen=$( echo ${lastDirArr[$count]} | wc -m)
+	maxOutputLen=$(tput cols) 
+	
+	for (( i=0; i <= 9; i++ )) 
+	do
+		YPos[$i,$count]=$((count*2 + 3 + addLines))
+	done
+	
+	#By using 2d array, it sets the position
+	XPos[0,$count]=1
+	XPos[1,$count]=3
+	XPos[2,$count]=5
+	XPos[3,$count]=9
+	XPos[4,$count]=11
+	XPos[5,$count]=13
+	XPos[6,$count]=17
+	XPos[7,$count]=19
+	XPos[8,$count]=21
+	XPos[9,$count]=25
+	
+	#Based on the length of the directory name, it output following
+	
+	if(( $outputLen < $maxOutputLen - 32 ))
+	then
+		ls -ld "${pathArr[$count]}" | awk -v var=$temp '{gsub(/./,"& ", $1); $2=$3=$4=$5=$6=$7=$8=$9=""; $9=var; $2=substr($1,3,6); $4=substr($1,9,5); $6=substr($1,14,6); $1=""; print $0}'	
+	#If the length is bigger than the column size then it will implement the following
+	elif(( $outputLen >= $maxOutputLen - 32 )) && (( $outputLen < $maxOutputLen ))
+	then
+	
+		ls -ld "${pathArr[$count]}" | awk -v var=$temp '{gsub(/./,"& ", $1); $2=$3=$4=$5=$6=$7=$8=$9=""; $2=substr($1,3,6); $4=substr($1,9,5); $6=substr($1,14,6); $1=""; print $0}'	
+		
+		echo " $temp"
+		
+		addLines=$((addLines+1))
+		
+		XPos[9,$count]=1
+		YPos[9,$count]=$((${YPos[9,$count]} + 1))
+	else
+		exit 0;
+	fi
+	
+	count=$(( count+1 ))
+done
+
+#function to display the directory information
+dirInfo()
+{
+	tput sc
+	
+	tput cup ${YPos[9,$((position-1))]} ${XPos[9,$((position-1))]}
+	tput cud 1
+	tput cub $(tput cols)
+	ls -ld "${pathArr[$arrPos-1]}" | awk '{print "   Links: " $2 "  Owner: " $3 "  Group: " $4 "  Size: " $5 "  Modified: " $6, $7, $8 }'
+	tput rc
+}
+
+#function to remove directory Information
+removeDirInfo()
+{
+	tput sc
+	tput cup ${YPos[9,$((position-1))]} ${XPos[9,$((position-1))]}
+	tput cud 1
+	tput cub $(tput cols)
+	tput el
+	echo ""
+	tput rc
+}
+
+#function to set the position when user press q
+positionExit()
+{
+	tput cud $(( $(tput lines)-position-11 ))
+	tput cub 32
+}
+
+position=$(( iterations ))
+oldsettings=$(stty -g)
+arrPos=$position
+
+stty -echo -icanon min 1
+
+tput cuu 1
+dirInfo
+tput sc
+
+#To make a empty lines
+while (( ((position+12)) < $(tput lines)-1 -addLines ))
+do
+	echo ""
+	position=$(( position+1 ))
+done
+
+position=$(( iterations ))
+echo " Valid commands: k (up), j (down): move between filenames"
+echo "             h (left), l (right): move between permissions"
+echo "             r, w, x, -: change permissions; q: quit"
+tput rc
+
+
+
+command=
+
+fields=9
+hPos=9
+
+tput cup ${YPos[$hPos,$((position-1))]} ${XPos[$hPos,$((position-1))]}
+
+while true
+do
+	command=$(dd bs=1 count=1 2> /dev/null)
+	
+	#if statement for permission
+	if [ "$command" = "r" ]
+	then
+		if [ $hPos == 0 ]
+		then
+			chmod u+r "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "r"
+				tput cuu 1
+				tput cuf 1
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == 3 ]
+		then
+			chmod g+r "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "r"
+				tput cuu 1
+				tput cuf 9
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == 6 ]
+		then
+			chmod o+r "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "r"
+				tput cuu 1
+				tput cuf 17
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		else
+			echo "You need to be on the right position" > /dev/null
+		fi
+		
+	elif [ "$command" = "w" ]
+	then
+		if [ $hPos == 1 ]
+		then
+			chmod u+w "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "w"
+				tput cuu 1
+				tput cuf 3
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == 4 ]
+		then
+			chmod g+w "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "w"
+				tput cuu 1
+				tput cuf 11
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == 7 ]
+		then
+			chmod o+w "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "w"
+				tput cuu 1
+				tput cuf 19
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		else
+			echo "You need to be on the right position" > /dev/null
+		fi
+		
+	elif [ "$command" = "x" ]
+	then
+		if [ $hPos == 2 ]
+		then
+			chmod u+x "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "x"
+				tput cuu 1
+				tput cuf 5
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == 5 ]
+		then
+			chmod g+x "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "x"
+				tput cuu 1
+				tput cuf 13
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == 8 ]
+		then
+			chmod o+x "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "x"
+				tput cuu 1
+				tput cuf 21
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		else
+			echo "You need to be on the right position" > /dev/null
+		fi
+		
+	elif [ "$command" = "-" ]
+	then
+		if [ $hPos == "0" ]
+		then
+			chmod u-r "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 1
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == "3" ]
+		then
+			chmod g-r "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 9
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == "6" ]
+		then
+			chmod o-r "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 17
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == "1" ]
+		then
+			chmod u-w "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 3
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == "4" ]
+		then
+			chmod g-w "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 11
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == "7" ]
+		then
+			chmod o-w "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 19
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == "2" ]
+		then
+			chmod u-x "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 5
+			else
+				echo "You cannot assign more" > /dev/null
+			fi		
+		elif [ $hPos == "5" ]
+		then
+			chmod g-x "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 13
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		elif [ $hPos == "8" ]
+		then
+			chmod o-x "${pathArr[$arrPos-1]}" > /dev/null
+			if [ $? -eq "0" ]
+			then 
+				echo "-"
+				tput cuu 1
+				tput cuf 21
+			else
+				echo "You cannot assign more" > /dev/null
+			fi
+		else
+			echo "You need to be on the right position" > /dev/null
+		fi
+	elif [ "$command" = "q" ]
+	then
+		positionExit
+		stty $oldsettings
+		stty echo
+		exit 0 	
+	fi
+	
+	#if statement for movement
+	if [ "$command" = "k" ] && (( position > 1 ))
+	then
+		removeDirInfo
+		
+		position=$(( position-1 ))
+		arrPos=$(( arrPos-1 ))
+		
+		tput cup ${YPos[$hPos,$((position-1))]} ${XPos[$hPos,$((position-1))]}
+		
+		dirInfo
+	elif [ "$command" = "j" ] && (( position < $iterations ))
+	then
+		removeDirInfo
+
+		position=$(( position+1 ))
+		arrPos=$(( arrPos+1 ))
+		
+		tput cup ${YPos[$hPos,$((position-1))]} ${XPos[$hPos,$((position-1))]}
+		dirInfo
+	elif [ "$command" = "h" ] && (( hPos > 0 ))
+	then
+		hPos=$(( hPos - 1 ))
+		
+		tput cup ${YPos[$hPos,$((position-1))]} ${XPos[$hPos,$((position-1))]}
+	elif [ "$command" = "l" ] && (( hPos < $fields ))
+	then
+		hPos=$(( hPos + 1 ))
+		
+		tput cup ${YPos[$hPos,$((position-1))]} ${XPos[$hPos,$((position-1))]}
+	fi
+done

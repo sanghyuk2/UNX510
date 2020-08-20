@@ -1,0 +1,159 @@
+#!/bin/bash
+# Assignment 2
+# Course:                UNX510
+# Family Name:           Lee
+# Given Name:            Sanghyuk
+# Student Number:        129-405-171
+# Login name:            slee395
+# Professor:             Shahdad Shariatmadari
+# Due Date:              July 24, 2020
+#
+# I declare that the attached assignment is my own work in accordance with
+# Seneca Academic Policy.  No part of this assignment has been copied manually
+# or electronically from any other source (including web sites) or distributed
+# to other students.
+
+#used to reset the setting when user ctrl + c						    
+trap 'stty icanon icrnl echo; tput cup 31 0; exit 0' INT
+currDir=$1
+count=1
+pvsCount=0
+arrayPos=0
+declare -a pathArr 
+declare -a onlyDirArr
+
+#check wheter the number of argument is less than 1
+if [ "$#" -lt 1 ]; then
+	currDir=$PWD
+fi
+#check wheter the number of argument is greater than 2
+if [ "$#" -gt 1 ]; then
+	echo "Usage: pathdisplay [ dir-name ]"
+	exit 1
+fi
+#check wheter the argument is directory
+if [ ! -d "$currDir" ]; then
+	echo "$currDir is not valid directory name"
+	exit 1
+fi
+
+clear
+
+echo "  Owner	Group	Other	Filename"
+echo "  -----	-----	-----	--------"
+#get the path using realpath command 
+dir1=$(realpath $currDir)"/"
+
+#set delimieter to / and count how many directory field 
+iterations=$(echo "${dir1}" | awk -F"/" '{print NF-1}')
+
+while (( count < $iterations ))
+do
+	pathArr[$count]=$(echo $dir1 | cut -d"/" -f$((count+1)))
+	onlyDirArr[$count]=${pathArr[$count]}
+	pathArr[$count]=${pathArr[$pvsCount]}"/"${pathArr[$count]}
+	pvsCount=$count
+	count=$(( count+1 ))
+done
+
+pathArr[0]='/'
+onlyDirArr[0]='/'
+
+count=0
+#show the permission and filename
+while (( count < $iterations ))
+do
+	echo ""
+	temp=${onlyDirArr[$count]}
+	ls -ld "${pathArr[$count]}" | awk -v var=$temp ' {gsub(/./,"& ", $1); $2=$3=$4=$5=$6=$7=$8=$9=""; $9=var;  $2=substr($1,2,6); $4=substr($1,9,5); $6=substr($1,14,6); $1=""; print $0}'	
+	count=$(( count+1 ))
+done
+
+#function to set cursor postion to display Info
+postionInfo()
+{
+	tput rc
+	tput cuf 25
+	tput cuu 1
+}
+#function to display directory Information 
+dirInfo()
+{
+	tput sc
+	tput cud 1
+	tput cub 24
+	ls -ld "${pathArr[$arrayPos-1]}" | awk '{print "   Links: "  $2 "  Owner: "  $3 "  Group: "  $4 "  Size: "  $5 "  Modified: "  $6,  $7,  $8 }'	
+	tput cuu 1
+	tput rc
+}
+#function to erase directory Information
+makeBlank()
+{
+	tput sc
+	tput cud 1
+	tput cub 24
+	tput el
+	tput cuu 1
+	tput rc
+}
+#function to set cursor postion when user type u 
+postionUp()
+{
+	tput cuu 2
+	position=$(( position-1 ))
+	arrayPos=$(( arrayPos-1 ))
+}
+#function to set cursor postion when user type d
+positionDown()
+{
+	tput cud 2 
+	position=$(( position+1 ))
+	arrayPos=$(( arrayPos+1 ))
+}
+#function to set cursor postion when user exit
+positionExit()
+{
+	tput cud $(( $(tput lines)-position-4 ))
+	tput cub 32
+}
+
+position=$(( iterations ))
+arrayPos=$position
+oldsettings=$(stty -g)
+#to set typed keyboard hidden
+stty -echo -icanon min 1
+
+tput sc
+while (( ((position+10)) < $(tput lines) ))
+do
+	echo ""
+	position=$(( position+1 ))
+done
+position=$(( iterations ))
+
+echo "  Valid commands: u(p) d(own) q(uit)"
+
+postionInfo
+dirInfo
+command=
+while true
+do
+	#action based on what the user typed
+	command=$(dd bs=1 count=1 2> /dev/null)
+	if [ "$command" = "u" ] && (( position > 1 ))
+	then
+		makeBlank
+		postionUp
+		dirInfo
+	elif [ "$command" = "d" ] && (( position < $iterations ))
+	then
+		makeBlank
+		positionDown
+		dirInfo
+	elif [ "$command" = "q" ]
+	then
+		positionExit
+		stty $oldsettings
+		exit 0 	
+	fi
+done
