@@ -1,0 +1,8 @@
+#!/bin/bash
+
+shopt -s extglob nullglob dotglob
+dir=$1
+for file in "$dir"/!(*.old)
+do
+	mv -- "$file" "$file.old"
+done

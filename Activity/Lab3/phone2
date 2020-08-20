@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo -n "Enter a name to search for: "
+read name
+
+grep -i $name ~unx510/2020b/phonebook

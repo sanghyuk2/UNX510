@@ -1,0 +1,11 @@
+#!/bin/bash
+
+for filename in * 
+do
+	if [ ! $(echo $filename | grep "\.old$") ] 
+	then
+		mv $1/$filename $1/$filename.old
+	fi
+
+	echo $filename | grep "\.old$" > /dev/null
+done

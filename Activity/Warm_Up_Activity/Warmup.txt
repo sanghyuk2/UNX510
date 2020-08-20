@@ -1,0 +1,1 @@
+This given code read the line of the accepted file from the first line so that as you can see it shows the line number from 1 on the left side
